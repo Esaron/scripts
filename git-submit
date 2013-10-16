@@ -1,0 +1,36 @@
+#!/bin/bash
+
+remote=$(git config --get submit.remote )
+current=$( git rev-parse --symbolic-full-name --abbrev-ref HEAD )
+upstream=$(git rev-parse --symbolic-full-name --abbrev-ref @{u} )
+parent=${upstream#*/} # trim the leading remote name portion
+num_submit=$( git rev-list @{u}.. | wc -l )
+
+if [ -z "$remote" ]
+then
+	echo "submit.remote is not set"
+	exit 1
+fi
+
+if [ -z "$parent" ]
+then
+	echo "can not determine upstream of current branch"
+	exit 1
+fi
+
+if [ "$num_submit" -eq 0 ]
+then
+	echo "nothing found to submit between $current and $upstream"
+	exit 0
+elif [ "$num_submit" -ne 1 ]
+then
+	echo "can only submit a single commit, found $num_submit"
+	exit 1
+fi
+
+target="$parent"
+if [ "$parent" != "$current" -a "$current" != 'master' -a "$current" != 'trunk' ]
+then
+	target="$target/$current"
+fi
+git push "$remote" HEAD:refs/for/$target
