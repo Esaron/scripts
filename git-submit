@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [ $# -eq 0 ]
+then
+	echo "branch name not provided"
+	exit 1
+fi
+
+workitem=$1
+
 remote=$(git config --get submit.remote )
 current=$( git rev-parse --symbolic-full-name --abbrev-ref HEAD )
 upstream=$(git rev-parse --symbolic-full-name --abbrev-ref @{u} )
@@ -33,4 +41,4 @@ if [ "$parent" != "$current" -a "$current" != 'master' -a "$current" != 'trunk' 
 then
 	target="$target/$current"
 fi
-git push "$remote" HEAD:refs/for/$target
+git branch -m $workitem && git push "$remote" HEAD:refs/for/$target && git co -b 5.0
