@@ -4,7 +4,7 @@ git rev-parse || exit 1
 
 #jslint properly handles no files being specified
 DIFFBASE=HEAD
-FILES=$( git diff --diff-filter=AMCR --name-only --relative "$DIFFBASE" -- "$@" )
+FILES=$( git diff --diff-filter=AMCR --name-only --relative "$DIFFBASE" -- "$@" | grep "\.js$" )
 if [ -z "$FILES" ]
 then
 	echo "no files to scan"
