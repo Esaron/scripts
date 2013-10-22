@@ -1,8 +1,8 @@
 #!/bin/bash
 
-JSLINT_JAR=~/bin/jslint4java.jar
+JSLINT_JAR=~/bin/jslint4java-2.0.5.jar
 #JSLINT_CONFIG="--bitwise --browser --eqeqeq --immed --newcap --undef --indent 4"
-JSLINT_CONFIG="--browser --devel --newcap --indent 4 --vars --nomen --sloppy --confusion --white --maxerr 9999 --plusplus --fragment --cap"
+JSLINT_CONFIG="--browser --devel --newcap --indent 4 --vars --nomen --sloppy --white --maxerr 9999 --plusplus --fragment --cap"
 GLOBALS="--predef dojo,dojox,dijit,$,jQuery,bootstrap,navBar,appState,js,util,config,widgets"
 
 ARGS=( "$@" )
