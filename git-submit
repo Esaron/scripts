@@ -31,13 +31,14 @@ then
 fi
 
 target="$parent"
-if [ "$parent" != "$current" -a "$current" != 'master' -a "$current" != 'trunk' ]
+if [ "$parent" != "$current" ]
 then
 	target="$target/$current"
 fi
+git pull
 if [ ! -z $workitem ]
 then
-	git branch -m $workitem && git push "$remote" HEAD:refs/for/$target && git co -b 5.0
+	git branch -m $workitem && git push "$remote" HEAD:refs/for/$target && git co -b $current
 else
 	git push "$remote" HEAD:refs/for/$target
 fi
