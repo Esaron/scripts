@@ -33,6 +33,7 @@ fi
 if [ ! -z "$IMGPATH" ] ; then
   if [ ! -z "$IMGURL" ] ; then
     wget -O "$IMGPATH" "$IMGURL"
+    attr -s url -V "$IMGURL" "$IMGPATH"
   fi
   env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
   #OLDFILES=$(find "$BASEPATH" -type f -not -name "$DATEPREFIX*" -delete)
