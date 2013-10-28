@@ -1,12 +1,19 @@
 #!/bin/bash
 
-workitem=$1
+for ((i = 1; i <= $#; i++)); do
+  if [ $i -eq "-f" ]
+  then
+    force=true
+  else
+    workitem=$i
+  fi
+done
 
-remote=$(git config --get submit.remote )
-current=$( git rev-parse --symbolic-full-name --abbrev-ref HEAD )
-upstream=$(git rev-parse --symbolic-full-name --abbrev-ref @{u} )
+remote=$(git config --get submit.remote)
+current=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
+upstream=$(git rev-parse --symbolic-full-name --abbrev-ref @{u})
 parent=${upstream#*/} # trim the leading remote name portion
-num_submit=$( git rev-list @{u}.. | wc -l )
+num_submit=$(git rev-list @{u}.. | wc -l)
 
 _gen_ChangeIdInput() {
   echo "tree `git write-tree`"
@@ -40,7 +47,7 @@ if [ "$num_submit" -eq 0 ]
 then
   echo "nothing found to submit between $current and $upstream"
   exit 0
-elif [ "$num_submit" -ne 1 ]
+elif [[ "$num_submit" -ne 1 && !$force ]]
 then
   echo "can only submit a single commit, found $num_submit"
   exit 1
