@@ -57,6 +57,6 @@ else
   then
     workitem=`_gen_ChangeId`
   fi
-  git branch -m $workitem && git push "$remote" HEAD:refs/for/$target && git co $current
+  git branch -m $workitem && git push "$remote" HEAD:refs/for/$target
 fi
 git branch -vv
