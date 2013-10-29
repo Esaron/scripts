@@ -4,7 +4,7 @@ force=0
 for i in `seq 1 $#`
 do
   eval curarg=\$$i
-  if [ $curarg == "-f" ]
+  if [ "$curarg" = "-f" ]
   then
     force=1
   else
