@@ -1,12 +1,12 @@
-#!/bin/bash
+#/bin/bash
 
-force=false
+force=0
 for ((i = 1; i <= $#; i++)); do
   if [ $i == "-f" ]
   then
-    force=true
+    force=1
   else
-    workitem=$i
+    topic=$i
   fi
 done
 
@@ -48,7 +48,7 @@ if [ "$num_submit" -eq 0 ]
 then
   echo "nothing found to submit between $current and $upstream"
   exit 0
-elif [[ "$num_submit" -ne 1 && !$force ]]
+elif [ "$num_submit" -ne 1 -a $force -eq 0 ]
 then
   echo "can only submit a single commit, found $num_submit"
   exit 1
@@ -56,15 +56,24 @@ fi
 
 target="$parent"
 git pull
+
+if [ -z $topic ]
+then
+  if [ $force -eq 1 ]
+  then
+    topic=`_gen_ChangeId`
+  fi
+else
+  echo "must enter a topic!"
+  exit 1
+fi
+
+git branch -m $topic
+
 if [ "$parent" != "$current" ]
 then
   target="$target/$current"
-  git push "$remote" HEAD:refs/for/$target
-else
-  if [ -z $workitem ]
-  then
-    workitem=`_gen_ChangeId`
-  fi
-  git branch -m $workitem && git push "$remote" HEAD:refs/for/$target
 fi
+
+git push "$remote" HEAD:refs/for/$target
 git branch -vv
