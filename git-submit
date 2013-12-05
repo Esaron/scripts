@@ -68,6 +68,7 @@ else
   then
     topic=`_gen_ChangeId`
   fi
+  target="$target/$topic"
   git branch -m $topic && git push "$remote" HEAD:refs/for/$target
 fi
 git branch -vv
