@@ -16,9 +16,6 @@ apt-get install ia32-libs
 apt-get install "linux-headers-$(uname -r)"
 apt-get install dkms
 
-# groovy
-apt-get install groovy
-
 # cli utilities
 apt-get install vim vim-gnome
 apt-get install curl
@@ -40,10 +37,20 @@ apt-get install mercurial
 apt-get install apache2        # httpd
 apt-get install openssh-server # sshd
 
-# apps
+# java
 apt-get install openjdk-7-jdk
 apt-get install openjdk-6-jdk
 apt-get install default-jdk
+apt-get install icedtea-7-plugin
+apt-get install maven
+
+# other languages
+apt-get install groovy
+apt-get install perl
+apt-get install python
+apt-get install ruby
+
+# apps
 apt-get install pidgin
 apt-get install synaptic       # synaptic package manager
 apt-get install compizconfig-settings-manager # ccsm
@@ -69,4 +76,8 @@ then
 	chmod a+r /etc/apt/sources.list.d/virtualbox.list
 	apt-get update
 fi
-apt-get install virtualbox-4.2
+apt-get install virtualbox
+dpkg -i -R ~/Documents/IBM/compliance/depPackages/
+
+# attempt cleanup
+apt-get autoremove
