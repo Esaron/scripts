@@ -1,6 +1,13 @@
 #!/bin/bash -e
 # exit on first error
 
+function aptget() {
+	apt-get -y --force-yes "$@"
+}
+function addaptrepository() {
+	add-apt-repository -y "$@"
+}
+
 # reduce swapping, default 60
 if [ ! -f /etc/sysctl.d/60-swappiness.conf ]
 then
@@ -10,53 +17,53 @@ then
 fi
 
 # 32 bit libs for some legacy apps (e.g. jdgui)
-apt-get install ia32-libs
+aptget install ia32-libs
 
 # for virtualbox kernel module support
-apt-get install "linux-headers-$(uname -r)"
-apt-get install dkms
+aptget install "linux-headers-$(uname -r)"
+aptget install dkms
 
 # cli utilities
-apt-get install vim vim-gnome
-apt-get install curl
-apt-get install rdesktop
-apt-get install ant
-apt-get install flip
-apt-get install libxml2-utils  # xmllint
-apt-get install sshfs
+aptget install vim vim-gnome
+aptget install curl
+aptget install rdesktop
+aptget install ant
+aptget install flip
+aptget install libxml2-utils  # xmllint
+aptget install sshfs
 #apt-get install cryptsetup     # ecryptfs-setup-swap
 
 # scm
-add-apt-repository ppa:git-core/ppa # ubuntu git maintainers
-apt-get update
-apt-get install git git-gui gitk
-apt-get install subversion
-apt-get install mercurial
+addaptrepository ppa:git-core/ppa # ubuntu git maintainers
+aptget update
+aptget install git git-gui gitk
+aptget install subversion
+aptget install mercurial
 
 # services
-apt-get install apache2        # httpd
-apt-get install openssh-server # sshd
+aptget install apache2        # httpd
+aptget install openssh-server # sshd
 
 # java
-apt-get install openjdk-7-jdk
-apt-get install openjdk-6-jdk
-apt-get install default-jdk
-apt-get install icedtea-7-plugin
-apt-get install maven
+aptget install openjdk-7-jdk
+aptget install openjdk-6-jdk
+aptget install default-jdk
+aptget install icedtea-7-plugin
+aptget install maven
 
 # other languages
-apt-get install groovy
-apt-get install perl
-apt-get install python
-apt-get install ruby
+aptget install groovy
+aptget install perl
+aptget install python
+aptget install ruby
 
 # apps
-apt-get install pidgin
-apt-get install synaptic       # synaptic package manager
-apt-get install compizconfig-settings-manager # ccsm
-apt-get install compiz-plugins # extra compiz settings e.g. Window Rules
-apt-get install wireshark
-apt-get install nmap
+aptget install pidgin
+aptget install synaptic       # synaptic package manager
+aptget install compizconfig-settings-manager # ccsm
+aptget install compiz-plugins # extra compiz settings e.g. Window Rules
+aptget install wireshark
+aptget install nmap
 
 # third party apps
 
@@ -65,19 +72,18 @@ then
 	wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 	echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
 	chmod a+r /etc/apt/sources.list.d/google-chrome.list
-	apt-get update
+	aptget update
 fi
-apt-get install google-chrome-stable
+aptget install google-chrome-stable
 
 if [ ! -f /etc/apt/sources.list.d/virtualbox.list ]
 then
 	wget -q -O - http://download.virtualbox.org/virtualbox/debian/oracle_vbox.asc -O- | sudo apt-key add -
-	echo "deb http://download.virtualbox.org/virtualbox/debian quantal contrib" >> /etc/apt/sources.list.d/virtualbox.list
+	echo "deb http://download.virtualbox.org/virtualbox/debian raring contrib" >> /etc/apt/sources.list.d/virtualbox.list
 	chmod a+r /etc/apt/sources.list.d/virtualbox.list
-	apt-get update
+	aptget update
 fi
-apt-get install virtualbox
-dpkg -i -R ~/Documents/IBM/compliance/depPackages/
+aptget install virtualbox
 
 # attempt cleanup
-apt-get autoremove
+aptget autoremove
