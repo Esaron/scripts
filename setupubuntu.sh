@@ -64,6 +64,7 @@ aptget install compizconfig-settings-manager # ccsm
 aptget install compiz-plugins # extra compiz settings e.g. Window Rules
 aptget install wireshark
 aptget install nmap
+aptget install attr
 
 # third party apps
 
