@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ADD REDDIT FEEDS TO ME and watch the magic...
-FEEDS=("wallpapers" "earthporn" "spaceporn" "MinimalWallpaper" "wallpaper" "cityporn" "villageporn" "architectureporn" "infrastructureporn" "abandonedporn" "ruralporn" "aerialporn" "adrenalineporn" "animalporn" "macroporn" "microporn" "waterporn" "skyporn" "fireporn" "botanicalporn")
+FEEDS=("wallpapers" "earthporn" "spaceporn" "MinimalWallpaper" "wallpaper" "cityporn" "villageporn" "architectureporn" "infrastructureporn" "abandonedporn" "ruralporn" "aerialporn" "adrenalineporn" "animalporn" "macroporn" "microporn" "waterporn" "skyporn" "fireporn" "botanicalporn" "WQHD_Wallpaper")
 
 FEEDNUMBER=$(( ($RANDOM % ${#FEEDS[@]}) ))
 BASEPATH="/home/jdn/Pictures/redditWallpapers/"
