@@ -35,7 +35,14 @@ if [ ! -z "$IMGPATH" ] ; then
     wget -O "$IMGPATH" "$IMGURL"
     attr -s url -V "$IMGURL" "$IMGPATH"
   fi
-  env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
+  IMGWIDTHHEIGHT=$(identify -format "%w,%h" $IMGPATH)
+  IMGWIDTH=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 1)
+  IMGHEIGHT=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 2)
+  if [[ $IMGWIDTH -gt 1100 && $IMGHEIGHT -gt 700 ]] ; then
+    env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
+  else
+    echo "Not setting desktop to $IMGPATH as image is too small (${IMGWIDTH}x${IMGHEIGHT})"
+  fi
   #OLDFILES=$(find "$BASEPATH" -type f -not -name "$DATEPREFIX*" -delete)
   #for FILE in $OLDFILES
   #do
