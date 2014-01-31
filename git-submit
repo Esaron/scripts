@@ -50,10 +50,10 @@ if [ "$num_submit" -eq 0 ]
 then
   echo "nothing found to submit between $current and $upstream"
   exit 0
-elif [ "$num_submit" -ne 1 -a $force -eq 0 ]
-then
-  echo "can only submit a single commit, found $num_submit"
-  exit 1
+#elif [ "$num_submit" -ne 1 -a $force -eq 0 ]
+#then
+#  echo "can only submit a single commit, found $num_submit"
+#  exit 1
 fi
 
 target="$parent"
