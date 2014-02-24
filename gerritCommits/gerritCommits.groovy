@@ -5,8 +5,11 @@ import java.io.File
 import java.io.Console
 import java.io.PrintWriter
 import java.security.KeyStore
+import java.text.SimpleDateFormat
 import java.awt.*
+import java.awt.image.BufferedImage
 import javax.swing.WindowConstants as WC
+import javax.imageio.ImageIO
 import org.apache.http.conn.scheme.Scheme
 import org.apache.http.conn.ssl.SSLSocketFactory
 import org.jfree.chart.JFreeChart
@@ -25,6 +28,8 @@ import static groovyx.net.http.ContentType.URLENC
 
 String result = ""
 Console console = System.console()
+SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd")
+
 CliBuilder cli = new CliBuilder(usage:'gerritCommits [options] [target]', header:'Options:')
 cli.h(longOpt: 'help', 'show usage information and quit')
 cli.u(longOpt: 'user', args:1, valueSeparator:'=', argName:'username', 'username to authenticate with gerrit', required: false)
@@ -172,11 +177,13 @@ try {
     ChartPanel chartPanel = new ChartPanel(chart)
     GraphicsEnvironment graphicsEnv = GraphicsEnvironment.getLocalGraphicsEnvironment()
     GraphicsDevice[] devices = graphicsEnv.getScreenDevices()
+    GraphicsDevice monitor
     int width = 0
     int height = 0
-    for (def device : devices) {
+    for (GraphicsDevice device : devices) {
         DisplayMode mode = device.getDisplayMode()
         if (mode.getWidth() > width) {
+            monitor = device
             width = mode.getWidth()
             height = mode.getHeight()
         }
@@ -187,7 +194,14 @@ try {
             widget(chartPanel)
         }
     }
+    Component chartComp = frame.contentPane.getComponent(0)
     frame.pack()
+    BufferedImage chartImage = new BufferedImage(chartComp.width, chartComp.height, BufferedImage.TYPE_INT_RGB)
+    Graphics2D chartGraphics = chartImage.createGraphics()
+    chartComp.print(chartGraphics)
+    chartGraphics.dispose()
+    File chartFile = new File(dateFormat.format(new Date()) + "_commits.png")
+    ImageIO.write(chartImage, "png", chartFile)
     frame.show()
 }
 catch (Exception e) {
