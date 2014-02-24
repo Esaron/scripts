@@ -73,18 +73,18 @@ def targets = options.arguments()
 String username = options.u
 String password
 if (!targets) {
-    printStreams('Gerrit Server URL:')
+    println('Gerrit Server URL:')
     targets = [console.readLine()]
 }
 if (targets.size() != 1) {
-    printStreams('You can only provide 1 target url')
+    println('You can only provide 1 target url')
     System.exit(1)
 }
 if (!options.u) {
-    printStreams('Username:')
+    println('Username:')
     username = console.readLine()
 }
-printStreams('Password:')
+println('Password:')
 password = new String(console.readPassword())
 
 String target = targets[0]
@@ -94,17 +94,17 @@ try {
     targetUrl = new URL(target)
 }
 catch (MalformedURLException e) {
-    printStreams("Unparseable URL or unknown protocol: $target")
+    println("Unparseable URL or unknown protocol: $target")
     throw e
 }
 
 try {
-    printStreams("Target URL: $targetUrl")
-    printStreams("Username: $username")
-    printStreams("Password: *****")
+    println("Target URL: $targetUrl")
+    println("Username: $username")
+    println("Password: *****")
     if (options.o) {
-        printStreams("Output file: $options.o")
-        printStreams("  Force output: $options.f")
+        println("Output file: $options.o")
+        println("  Force output: $options.f")
     }
     RESTClient gerritRest = new RESTClient(targetUrl)
     KeyStore keystore = KeyStore.getInstance(KeyStore.defaultType)
@@ -115,22 +115,20 @@ try {
     gerritRest.auth.basic(username, password)
     String suffix = 'a/changes/'
     String openParam = 'q=status:open'
-    printStreams("Open changes:")
+    println("Retrieving open changes...")
     def open = gerritRest.get(path: suffix, queryString: openParam, contentType: 'text/plain')
     if (open.status != 200) {
         throw new Exception("status of query GET ${targetUrl+suffix}?$openParam: $open.status")
     }
     String openChanges = open.data.text
-    printStreams(openChanges)
     result += '{"open":' + openChanges.substring(openChanges.indexOf('[')) + ','
     String mergedParam = 'q=status:merged'
-    printStreams("Merged changes:")
+    println("Retrieving merged changes...")
     def merged = gerritRest.get(path: suffix, queryString: mergedParam, contentType: 'text/plain')
     if (merged.status != 200) {
         throw new Exception("status of query GET ${targetUrl+suffix}?$mergedParam: $merged.status")
     }
     String mergedChanges = merged.data.text
-    printStreams(mergedChanges)
     result += '"merged":' + mergedChanges.substring(mergedChanges.indexOf('[')) + '}'
     JsonSlurper slurper = new JsonSlurper()
     def changeJson = slurper.parseText(result)
@@ -202,10 +200,11 @@ try {
     chartGraphics.dispose()
     File chartFile = new File(dateFormat.format(new Date()) + "_commits.png")
     ImageIO.write(chartImage, "png", chartFile)
+    printStreams(result)
     frame.show()
 }
 catch (Exception e) {
-    printStreams("Unknown exception encountered: $e")
+    println("Unknown exception encountered: $e")
     throw e
 }
 finally {
