@@ -5,6 +5,8 @@ FEEDS=("wallpapers" "earthporn" "spaceporn" "MinimalWallpaper" "wallpaper" "city
 
 FEEDNUMBER=$(( ($RANDOM % ${#FEEDS[@]}) ))
 BASEPATH="/home/jdn/Pictures/redditWallpapers/"
+MINWID=1280
+MINHT=720
 #DATEPREFIX=$(date +%Y%m%d)
 #TIMEPREFIX=$(date +%H.%M.%S)
 FEED="http://www.reddit.com/r/${FEEDS[$FEEDNUMBER]}/.rss"
@@ -40,7 +42,7 @@ while [ $COUNTER -gt 0 ] ; do
     IMGWIDTHHEIGHT=$(identify -format "%w,%h" $IMGPATH)
     IMGWIDTH=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 1)
     IMGHEIGHT=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 2)
-    if [[ $IMGWIDTH -gt 1100 && $IMGHEIGHT -gt 700 ]] ; then
+    if [[ $IMGWIDTH -ge $MINWID && $IMGHEIGHT -gt $MINHT ]] ; then
       env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
       COUNTER=0
     else
