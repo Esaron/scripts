@@ -12,10 +12,13 @@ MINHT=720
 FEED="http://www.reddit.com/r/${FEEDS[$FEEDNUMBER]}/.rss"
 IMGPATTERN='http://\(i.\)\?imgur.com/\([0-9a-zA-Z_-]*\)\(.jpg\)\?'
 RAWURLS=$(curl --silent $FEED | grep -o -e $IMGPATTERN)
+echo "Found raw urls:"
 echo $RAWURLS
+echo
 URLS=($RAWURLS)
 COUNTER=5
 while [ $COUNTER -gt 0 ] ; do
+  echo "------------------Getting wallpaper from reddit feed---------------"
   URL=${URLS[$(( $RANDOM % ${#URLS[@]} ))]}
 
   if [ "$(echo $URL | grep 'http://i.' )" == "" ] ; then
@@ -47,6 +50,7 @@ while [ $COUNTER -gt 0 ] ; do
       COUNTER=0
     else
       echo "Not setting desktop to $IMGPATH as image is too small (${IMGWIDTH}x${IMGHEIGHT})"
+      echo
       let COUNTER=$COUNTER-1
     fi
     #OLDFILES=$(find "$BASEPATH" -type f -not -name "$DATEPREFIX*" -delete)
