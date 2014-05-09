@@ -4,21 +4,22 @@
 FEEDS=("wallpapers" "earthporn" "spaceporn" "MinimalWallpaper" "wallpaper" "cityporn" "villageporn" "architectureporn" "infrastructureporn" "abandonedporn" "ruralporn" "aerialporn" "adrenalineporn" "animalporn" "macroporn" "microporn" "waterporn" "skyporn" "fireporn" "botanicalporn" "WQHD_Wallpaper" "iceporn" "seacreatureporn")
 
 FEEDNUMBER=$(( ($RANDOM % ${#FEEDS[@]}) ))
+FEED=${FEEDS[$FEEDNUMBER]}
 BASEPATH="/home/jdn/Pictures/redditWallpapers/"
 MINWID=1280
 MINHT=720
 #DATEPREFIX=$(date +%Y%m%d)
 #TIMEPREFIX=$(date +%H.%M.%S)
-FEED="http://www.reddit.com/r/${FEEDS[$FEEDNUMBER]}/.rss"
+FEEDURL="http://www.reddit.com/r/${FEED}/.rss"
 IMGPATTERN='http://\(i.\)\?imgur.com/\([0-9a-zA-Z_-]*\)\(.jpg\)\?'
-RAWURLS=$(curl --silent $FEED | grep -o -e $IMGPATTERN)
+RAWURLS=$(curl --silent $FEEDURL | grep -o -e $IMGPATTERN)
 echo "Found raw urls:"
 echo $RAWURLS
 echo
 URLS=($RAWURLS)
 RETRIES=5
 while [ $RETRIES -gt 0 ] ; do
-  echo "------------------Getting wallpaper from reddit feed---------------"
+  echo "------------------Getting wallpaper from subreddit: $FEED---------------"
   URL=${URLS[$(( $RANDOM % ${#URLS[@]} ))]}
 
   if [ "$(echo $URL | grep 'http://i.' )" == "" ] ; then
