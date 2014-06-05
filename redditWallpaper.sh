@@ -47,7 +47,7 @@ while [ $RETRIES -gt 0 ] ; do
     IMGWIDTH=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 1)
     IMGHEIGHT=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 2)
     if [[ $IMGWIDTH -ge $MINWID && $IMGHEIGHT -gt $MINHT ]] ; then
-      env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
+      env DISPLAY=:1 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
       RETRIES=0
     else
       echo "Not setting desktop to $IMGPATH as image is too small (${IMGWIDTH}x${IMGHEIGHT})"
