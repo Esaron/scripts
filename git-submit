@@ -17,6 +17,11 @@ current=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
 upstream=$(git rev-parse --symbolic-full-name --abbrev-ref @{u})
 parent=${upstream#*/} # trim the leading remote name portion
 num_submit=$(git rev-list @{u}.. | wc -l)
+reviewers=$(git config --get-all submit.reviewer)
+
+_joinReviewer() {
+  echo "r=$*" | sed 's/ /,r=/g'
+}
 
 _gen_ChangeIdInput() {
   echo "tree `git write-tree`"
@@ -56,19 +61,25 @@ then
 #  exit 1
 fi
 
+R=
+if [ -n "$reviewers" ]
+then
+  R=%$(_joinReviewer $reviewers)
+fi
+
 target="$parent"
 git pull
 
 if [ "$parent" != "$current" ]
 then
   target="$target/$current"
-  git push "$remote" HEAD:refs/for/$target
+  git push "$remote" HEAD:refs/for/$target$R
 else
   if [ -z $topic ]
   then
     topic=`_gen_ChangeId`
   fi
   target="$target/$topic"
-  git branch -m $topic && git push "$remote" HEAD:refs/for/$target
+  git branch -m $topic && git push "$remote" HEAD:refs/for/$target$R
 fi
 git branch -vv
