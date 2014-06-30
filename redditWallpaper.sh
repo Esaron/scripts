@@ -47,7 +47,9 @@ while [ $RETRIES -gt 0 ] ; do
     IMGWIDTH=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 1)
     IMGHEIGHT=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 2)
     if [[ $IMGWIDTH -ge $MINWID && $IMGHEIGHT -gt $MINHT ]] ; then
-      env DISPLAY=:1 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
+      # Need to get the DBUS_SESSION_BUS_ADDRESS var pid because gnome is stupid
+      export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+      env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
       RETRIES=0
     else
       echo "Not setting desktop to $IMGPATH as image is too small (${IMGWIDTH}x${IMGHEIGHT})"
