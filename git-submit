@@ -18,9 +18,20 @@ upstream=$(git rev-parse --symbolic-full-name --abbrev-ref @{u})
 parent=${upstream#*/} # trim the leading remote name portion
 num_submit=$(git rev-list @{u}.. | wc -l)
 reviewers=$(git config --get-all submit.reviewer) $(git config --get-all branch.$current.submit-reviewer)
+noreview=$(git config --get-all submit.noreview) $(git config --get-all branch.$current.submit-noreview)
+
+_splitNoReview() {
+  echo "$noreview" | sed 's/ /\n/g'
+}
 
 _joinReviewer() {
-  echo "r=$*" | sed 's/ /,r=/g'
+  yesreviewers=$*
+  noreviewers=($noreview)
+  for noreviewer in "${noreviewers[@]}"
+  do
+    yesreviewers=$(echo "$yesreviewers" | sed "s/$noreviewer//g")
+  done
+  echo "r=$yesreviewers" | sed 's/ \+/,r=/g'
 }
 
 _gen_ChangeIdInput() {

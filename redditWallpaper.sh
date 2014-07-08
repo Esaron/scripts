@@ -48,7 +48,8 @@ while [ $RETRIES -gt 0 ] ; do
     IMGHEIGHT=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 2)
     if [[ $IMGWIDTH -ge $MINWID && $IMGHEIGHT -gt $MINHT ]] ; then
       # Need to get the DBUS_SESSION_BUS_ADDRESS var pid because gnome is stupid
-      export $(cat /proc/$(pgrep -u `whoami` ^gnome-shell$)/environ | grep -z DBUS_SESSION_BUS_ADDRESS)
+PID=$(pgrep gnome-session)
+export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ|cut -d= -f2-)
       env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
       RETRIES=0
     else
