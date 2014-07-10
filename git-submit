@@ -12,13 +12,13 @@ do
   fi
 done
 
-remote=$(git config --get submit.remote)
-current=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)
-upstream=$(git rev-parse --symbolic-full-name --abbrev-ref @{u})
-parent=${upstream#*/} # trim the leading remote name portion
-num_submit=$(git rev-list @{u}.. | wc -l)
-reviewers=$(git config --get-all submit.reviewer) $(git config --get-all branch.$current.submit-reviewer)
-noreview=$(git config --get-all submit.noreview) $(git config --get-all branch.$current.submit-noreview)
+remote="$(git config --get submit.remote)"
+current="$(git rev-parse --symbolic-full-name --abbrev-ref HEAD)"
+upstream="$(git rev-parse --symbolic-full-name --abbrev-ref @{u})"
+parent="${upstream#*/}" # trim the leading remote name portion
+num_submit="$(git rev-list @{u}.. | wc -l)"
+reviewers="$(git config --get-all submit.reviewer) $(git config --get-all branch.$current.submit-reviewer)"
+noreview="$(git config --get-all submit.noreview) $(git config --get-all branch.$current.submit-noreview)"
 
 _splitNoReview() {
   echo "$noreview" | sed 's/ /\n/g'
