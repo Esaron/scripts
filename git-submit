@@ -29,7 +29,7 @@ _joinReviewer() {
   noreviewers=($noreview)
   for noreviewer in "${noreviewers[@]}"
   do
-    yesreviewers=$(echo "$yesreviewers" | sed "s/$noreviewer//g")
+    yesreviewers=$(echo "$yesreviewers" | sed "s/ *$noreviewer *//g")
   done
   echo "r=$yesreviewers" | sed 's/ \+/,r=/g'
 }
