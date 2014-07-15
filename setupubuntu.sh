@@ -66,6 +66,7 @@ aptget install wireshark
 aptget install nmap
 aptget install attr
 aptget install tree
+aptget install wine
 
 # third party apps
 
