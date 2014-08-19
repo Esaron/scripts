@@ -7,4 +7,4 @@ PASSWORD=
 MOUNT=disk:UB=$HOME/windows
 DOMAIN=UCLAB
 
-rdesktop -u $USER -p $PASSWORD -d $DOMAIN -a $COLOR_DEPTH -g $RESOLUTION -r $MOUNT -r clipboard:CLIPBOARD $HOST;
+rdesktop -u "$USER" -p "$PASSWORD" -d "$DOMAIN" -a "$COLOR_DEPTH" -g "$RESOLUTION" -r "$MOUNT" -r clipboard:CLIPBOARD "$HOST";
