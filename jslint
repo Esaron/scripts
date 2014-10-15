@@ -3,7 +3,7 @@
 JSLINT_JAR=~/bin/jslint4java-2.0.5.jar
 #JSLINT_CONFIG="--bitwise --browser --eqeqeq --immed --newcap --undef --indent 4"
 JSLINT_CONFIG="--browser --devel --newcap --indent 4 --vars --nomen --sloppy --white --maxerr 9999 --plusplus --todo --unparam"
-GLOBALS="--predef dojo,dojox,dijit,$,jQuery,bootstrap,navBar,appState,js,util,config,widgets"
+GLOBALS="--predef dojo,dojox,dijit,$,jQuery,bootstrap,navBar,appState,js,util,config,widgets,i18n,security,uReleaseConfig,deploy,getBTD,applyBTD,mxClient,mxUtils,mxToolbar,mxPrintPreview,mxWindow,mxCellOverlay,mxImage,mxPoint,mxConstants,mxEvent,require,define"
 
 ARGS=( "$@" )
 if [ ${#ARGS} -eq 0 ]

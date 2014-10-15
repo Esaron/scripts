@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Cycle Desktop Background
+Comment=Downloads and applies a new desktop background from reddit
+Exec=/home/jdn/bin/public/cycleBG.sh
+StartupWMClass=CycleDesktop
+Terminal=false
+Type=Application
+Icon=utilities-terminal
