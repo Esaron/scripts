@@ -31,7 +31,10 @@ _joinReviewer() {
   do
     yesreviewers=$(echo "$yesreviewers" | sed "s/ *$noreviewer *//g")
   done
-  echo "r=$yesreviewers" | sed 's/ \+/,r=/g'
+  if [ -z "$yesreviewers" ]
+  then
+    echo "r=$yesreviewers" | sed 's/ \+/,r=/g'
+  fi
 }
 
 _gen_ChangeIdInput() {
@@ -76,6 +79,10 @@ R=
 if [ -n "$reviewers" ]
 then
   R=%$(_joinReviewer $reviewers)
+  if [ "$R" == "%r=" ]
+  then
+    R=
+  fi
 fi
 
 target="$parent"
