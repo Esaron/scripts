@@ -51,6 +51,7 @@ while [ $RETRIES -gt 0 ] ; do
 PID=$(pgrep gnome-session)
 export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ|cut -d= -f2-)
       env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
+      echo "Current background: 'file://$IMGPATH'" > "$BASEPATH/_current"
       RETRIES=0
     else
       echo "Not setting desktop to $IMGPATH as image is too small (${IMGWIDTH}x${IMGHEIGHT})"
