@@ -67,6 +67,7 @@ aptget install nmap
 aptget install attr
 aptget install tree
 aptget install wine
+aptget install xbacklight
 
 # third party apps
 
