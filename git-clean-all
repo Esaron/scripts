@@ -1,42 +1,98 @@
 #!/bin/bash
 
 # Get current branch
-CURRENT=$( git name-rev HEAD 2> /dev/null | awk "{ print \$2 }" )
+CURRENT="$( git name-rev HEAD 2> /dev/null | awk "{ print \$2 }" )"
 # Find branches that have been merged into the current branch, not including the current (Safe to delete these)
-BRANCHES=$( git branch --merged | egrep -v "^\* $CURRENT$" )
+BRANCHES="$( git branch --merged | egrep -v "^\* $CURRENT$" )"
+# Find the current branch's upstream remote
+UPSTREAM="$( git branch --r --contains @{u} | grep "$CURRENT$" )"
+REMOTE="$( echo "$UPSTREAM" | sed "s/\/$CURRENT$//" )"
 
 # If we're sure we want to clean
 if [ "$1" = "-f" ]; then
 
   echo "FILES"
-  FILES=$( git clean -f )
+  FILES="$( git clean -f )"
   if [ -z "$FILES" ]; then
     echo "No files to remove"
+  else
+    echo "$FILES"
   fi
   echo
   echo "BRANCHES"
   if [ -z "$BRANCHES" ]; then
     echo "No branches to remove"
+  else
+    for BRANCH in $BRANCHES; do
+      git branch -d "$BRANCH"
+    done
   fi
-  for BRANCH in $BRANCHES; do
-    git branch -d $BRANCH
-  done
+  echo
+  echo "TAGS"
+  FPRUNE="$( git fetch --prune $REMOTE '+refs/tags/*:refs/tags/*' 2>&1 )"
+  if [ -z "$FPRUNE" ]; then
+    echo "No tags to remove"
+  else
+    echo "$FPRUNE"
+  fi
+  echo
+  echo "UNREACHABLE OBJECTS"
+  PRUNE=$( git prune -v )
+  if [ -z "$PRUNE" ]; then
+    echo "No unreachable objects to remove"
+  else
+    echo "$PRUNE"
+  fi
+  echo
+  echo "COMPRESSING OBJECT DATABASE TO SINGLE PACK FILE"
+  echo "This may take a while..."
+  git repack -fad --depth=250 --window=250
 
 # Otherwise, do a dry run and echo what we'll do
 else
 
   echo "FILES"
-  FILES=$( git clean -n )
+  FILES="$( git clean -n )"
   if [ -z "$FILES" ]; then
     echo "No files to remove"
+  else
+    echo "$FILES"
   fi
   echo
   echo "BRANCHES"
   if [ -z "$BRANCHES" ]; then
     echo "No branches to remove"
+  else
+    for BRANCH in $BRANCHES; do
+      echo "Would remove merged branch $BRANCH"
+    done
   fi
-  for BRANCH in $BRANCHES; do
-    echo "Would remove merged branch $BRANCH"
-  done
+  echo
+  echo "TAGS"
+  FPRUNE="$( git fetch --prune --dry-run $REMOTE '+refs/tags/*:refs/tags/*' 2>&1 )"
+  if [ -z "$FPRUNE" ]; then
+    echo "No tags to remove"
+  else
+    TAGREGEX="-> (.+)$"
+    while read LINE; do
+      [[ "$LINE" =~ $TAGREGEX ]]
+      TAG="${BASH_REMATCH[1]}"
+      if [ -n "$TAG" ]; then
+        echo "Would remove tag $TAG"
+      fi
+    done <<< "$FPRUNE"
+  fi
+  echo
+  echo "UNREACHABLE OBJECTS"
+  PRUNE=$( git prune -v -n )
+  if [ -z "$PRUNE" ]; then
+    echo "No unreachable objects to remove"
+  else
+    while read LINE; do
+      echo "Would remove unreachable object $LINE"
+    done <<< "$PRUNE"
+  fi
+  echo
+  echo "* Refusing to compress object database to single pack file on dry run"
 
 fi
