@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# Get current branch
+CURRENT=$( git name-rev HEAD 2> /dev/null | awk "{ print \$2 }" )
+# Find branches that have been merged into the current branch, not including the current (Safe to delete these)
+BRANCHES=$( git branch --merged | egrep -v "^\* $CURRENT$" )
+
+# If we're sure we want to clean
+if [ "$1" = "-f" ]; then
+
+  echo "FILES"
+  git clean -f
+  echo
+  echo "BRANCHES"
+  for BRANCH in $BRANCHES; do
+    git branch -d $BRANCH
+  done
+
+# Otherwise, do a dry run and echo what we'll do
+else
+
+  echo "FILES"
+  git clean -n
+  echo
+  echo "BRANCHES"
+  for BRANCH in $BRANCHES; do
+    echo "Would remove merged branch $BRANCH"
+  done
+
+fi
