@@ -9,9 +9,15 @@ BRANCHES=$( git branch --merged | egrep -v "^\* $CURRENT$" )
 if [ "$1" = "-f" ]; then
 
   echo "FILES"
-  git clean -f
+  FILES=$( git clean -f )
+  if [ -z "$FILES" ]; then
+    echo "No files to remove"
+  fi
   echo
   echo "BRANCHES"
+  if [ -z "$BRANCHES" ]; then
+    echo "No branches to remove"
+  fi
   for BRANCH in $BRANCHES; do
     git branch -d $BRANCH
   done
@@ -20,9 +26,15 @@ if [ "$1" = "-f" ]; then
 else
 
   echo "FILES"
-  git clean -n
+  FILES=$( git clean -n )
+  if [ -z "$FILES" ]; then
+    echo "No files to remove"
+  fi
   echo
   echo "BRANCHES"
+  if [ -z "$BRANCHES" ]; then
+    echo "No branches to remove"
+  fi
   for BRANCH in $BRANCHES; do
     echo "Would remove merged branch $BRANCH"
   done
