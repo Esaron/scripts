@@ -6,4 +6,5 @@ do
   cd $f
   git clean-all -f
   cd ..
+  echo
 done
