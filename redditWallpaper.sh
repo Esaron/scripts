@@ -42,7 +42,7 @@ while [ $RETRIES -gt 0 ] ; do
     if [ ! -z "$IMGURL" ] ; then
       wget -O "$IMGPATH" "$IMGURL"
       attr -s url -V "$IMGURL" "$IMGPATH"
-      attr -s feed -V "$FEED"
+      attr -s feed -V "$FEED" "$IMGPATH"
     fi
     IMGWIDTHHEIGHT=$(identify -format "%w,%h" $IMGPATH)
     IMGWIDTH=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 1)
