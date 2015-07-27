@@ -31,7 +31,7 @@ _joinReviewer() {
   do
     yesreviewers=$(echo "$yesreviewers" | sed "s/ *$noreviewer *//g")
   done
-  if [ -z "$yesreviewers" ]
+  if [ -n "$yesreviewers" ]
   then
     echo "r=$yesreviewers" | sed 's/ \+/,r=/g'
   fi
