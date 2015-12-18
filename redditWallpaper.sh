@@ -3,9 +3,12 @@
 # ADD REDDIT FEEDS TO ME and watch the magic...
 FEEDS=("wallpapers" "earthporn" "spaceporn" "MinimalWallpaper" "wallpaper" "cityporn" "villageporn" "architectureporn" "infrastructureporn" "abandonedporn" "ruralporn" "aerialporn" "adrenalineporn" "animalporn" "macroporn" "microporn" "waterporn" "skyporn" "fireporn" "botanicalporn" "WQHD_Wallpaper" "iceporn" "seacreatureporn")
 
+# Get platform
+OS=$(uname)
+
 FEEDNUMBER=$(( ($RANDOM % ${#FEEDS[@]}) ))
 FEED=${FEEDS[$FEEDNUMBER]}
-BASEPATH="/home/jdn/Pictures/redditWallpapers/"
+BASEPATH="/Users/esaron/Pictures/redditWallpapers/"
 MINWID=1280
 MINHT=720
 #DATEPREFIX=$(date +%Y%m%d)
@@ -40,18 +43,31 @@ while [ $RETRIES -gt 0 ] ; do
   fi
   if [ ! -z "$IMGPATH" ] ; then
     if [ ! -z "$IMGURL" ] ; then
-      wget -O "$IMGPATH" "$IMGURL"
-      attr -s url -V "$IMGURL" "$IMGPATH"
-      attr -s feed -V "$FEED" "$IMGPATH"
+      curl -o "$IMGPATH" "$IMGURL"
+      if hash attr 2> /dev/null; then
+        attr -s url -V "$IMGURL" "$IMGPATH"
+        attr -s feed -V "$FEED" "$IMGPATH"
+      fi
     fi
-    IMGWIDTHHEIGHT=$(identify -format "%w,%h" $IMGPATH)
-    IMGWIDTH=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 1)
-    IMGHEIGHT=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 2)
+    if [[ $OS == 'Linux' ]]; then
+      IMGWIDTHHEIGHT=$(identify -format "%w,%h" $IMGPATH)
+      IMGWIDTH=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 1)
+      IMGHEIGHT=$(echo $IMGWIDTHHEIGHT | cut -d "," -f 2)
+    elif [[ $OS == 'Darwin' ]]; then
+      IMGWIDTH=$(sips -g pixelWidth $IMGPATH | tail -n1 | cut -d" " -f4)
+      IMGHEIGHT=$(sips -g pixelHeight $IMGPATH | tail -n1 | cut -d" " -f4)
+    fi
     if [[ $IMGWIDTH -ge $MINWID && $IMGHEIGHT -gt $MINHT ]] ; then
-      # Need to get the DBUS_SESSION_BUS_ADDRESS var pid because gnome is stupid
-PID=$(pgrep gnome-session)
-export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ|cut -d= -f2-)
-      env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
+      # Linux //TODO fixme when you have your ubuntu machine dont think this works atm
+      if [[ "$OS" == 'Linux' ]]; then
+        # Need to get the DBUS_SESSION_BUS_ADDRESS var pid because gnome is stupid
+        PID=$(pgrep gnome-session)
+        export DBUS_SESSION_BUS_ADDRESS=$(grep -z DBUS_SESSION_BUS_ADDRESS /proc/$PID/environ|cut -d= -f2-)
+        env DISPLAY=:0 gsettings set org.gnome.desktop.background picture-uri "file://$IMGPATH"
+      # Mac
+      elif [[ "$OS" == 'Darwin' ]]; then
+        osascript -e "tell application \"Finder\"" -e "set desktop picture to POSIX file \"$IMGPATH\"" -e "end tell"
+      fi
       echo "Current background: 'file://$IMGPATH'" > "$BASEPATH/_current"
       RETRIES=0
     else
