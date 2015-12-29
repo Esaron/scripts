@@ -1,0 +1,49 @@
+#!/bin/bash
+
+function show_help {
+    echo "git stats [-a author] [-s startDate] [-e endDate]"
+    echo "Options:"
+    echo "    -h/-? Show this message."
+    echo "    -a    Filter by git author name."
+    echo "    -s    Filter by start date."
+    echo "    -e    Filter by end date."
+}
+
+OPTIND=1
+
+while getopts "h?a:s:e:o:" opt; do
+    case "$opt" in
+    h|\?) show_help
+          exit 0
+          ;;
+    a)    AUTHOR=$OPTARG
+          ;;
+    s)    START=$OPTARG
+          ;;
+    e)    END=$OPTARG
+          ;;
+    esac
+done
+
+shift $((OPTIND-1))
+
+LINES="git log"
+COMMITS="git each log --all"
+if [[ -n "$AUTHOR" ]]; then
+    LINES="$LINES --author=$AUTHOR"
+    COMMITS="$COMMITS --author=$AUTHOR"
+fi
+if [[ -n "$START" ]]; then
+    LINES="$LINES --since=$START"
+    COMMITS="$COMMITS --since=$START"
+fi
+if [[ -n "$END" ]]; then
+    LINES="$LINES --until=$END"
+    COMMITS="$COMMITS --until=$END"
+fi
+
+git remote -v | head -n1 | awk '{print $2}' | sed -e 's,.*:\(.*/\)\?,,' -e 's/\.git$//'
+git rev-parse --abbrev-ref HEAD
+echo "Commits:"
+$COMMITS | git shortlog --numbered --summary
+$LINES --pretty=tformat: --numstat | gawk '{ add += $1; subs += $2; loc += $1 - $2 } END { printf "added lines: %s removed lines: %s total lines: %s\n", add, subs, loc }' -

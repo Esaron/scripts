@@ -11,6 +11,9 @@ REMOTE="$( echo "$UPSTREAM" | sed "s/\/$CURRENT$//" )"
 # If we're sure we want to clean
 if [ "$1" = "-f" ]; then
 
+  echo "PRUNING"
+  git remote prune $REMOTE
+  echo
   echo "FILES"
   FILES="$( git clean -f )"
   if [ -z "$FILES" ]; then
@@ -51,6 +54,9 @@ if [ "$1" = "-f" ]; then
 # Otherwise, do a dry run and echo what we'll do
 else
 
+  echo "PRUNING"
+  echo "Not pruning on dry run"
+  echo
   echo "FILES"
   FILES="$( git clean -n )"
   if [ -z "$FILES" ]; then
