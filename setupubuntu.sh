@@ -17,7 +17,8 @@ then
 fi
 
 # 32 bit libs for some legacy apps (e.g. jdgui)
-aptget install ia32-libs
+#aptget install ia32-libs
+aptget install lib32ncurses5 lib32z1
 
 # for virtualbox kernel module support
 aptget install "linux-headers-$(uname -r)"
