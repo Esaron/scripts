@@ -60,6 +60,7 @@ if $( isInteractive )
         #bind '"\t":menu-complete' # cycle through matches on repeated tab
     fi
 }
+setup_key_bindings
 
 #
 # Example Setup
