@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# FIXWS_FILTER set a extended-regex filter for what files to scan. Set to empty to process all files
+
+if [ $# -eq 0 ]
+then
+	echo "No files specified"
+	exit 0
+fi
+
+# Utility to join an array with a given separator
+# example usage:
+#    `join | A B C`
+#    will print "A|B|C"
+function join {
+  IFS=$1
+  shift
+  echo "$*"
+}
+
+#
+# Create list of sed flags for use in this script
+#
+XARG_OPTS=( -0 )
+SED_OPTS=( )
+if [ `uname -s` = 'Darwin' ]
+then
+	# no equivalent to the --separate flag, probably superfluous
+	SED_OPTS=( -E -i '' )
+else
+	SED_OPTS=( --separate --regexp-extended --in-place )
+	XARG_OPTS=( "${XARG_OPTS[@]}" --no-run-if-empty )
+fi
+
+
+# list the extensions to "fix"
+
+EXTENSIONS_DEFAULT_ARRAY=( java groovy jsp tag html xml ddl sql xsd bsh js css conf properties tld txt json )
+#EXTENSIONS_DEFAULT='java|groovy|jsp|tag|html|xml|ddl|sql|xsd|bsh|js|css|conf|properties|tld|txt|json'
+if [ -z "$FIXWS_FILTER" ]
+then
+	EXTENSIONS_DEFAULT=$( join "|" "${EXTENSIONS_DEFAULT_ARRAY[@]}" )
+	FIXWS_FILTER="\.(${EXTENSIONS:-$EXTENSIONS_DEFAULT})\$"
+fi
+
+# locate modified files with given extensions
+FILES=( $@ )
+FILES=$( find "${FILES[@]}" -type f | grep -E "$FIXWS_FILTER" )
+
+# apply whitespace conventions to located files (unix EOL, spaces-only, no trailing whitespace)
+echo "$FILES"
+if [ -n "$FILES" ]
+then
+    echo -n "$FILES" | tr '\n' '\0' | xargs "${XARG_OPTS[@]}" flip -u                               # use unix line endings
+    echo -n "$FILES" | tr '\n' '\0' | xargs "${XARG_OPTS[@]}" sed "${SED_OPTS[@]}" -e 's/	/    /g'  # replace tabs with spaces
+    echo -n "$FILES" | tr '\n' '\0' | xargs "${XARG_OPTS[@]}" sed "${SED_OPTS[@]}" -e 's/ +$//g'    # remove trailing spaces
+fi
