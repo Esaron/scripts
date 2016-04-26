@@ -58,7 +58,7 @@ while [ $RETRIES -gt 0 ] ; do
       IMGHEIGHT=$(sips -g pixelHeight $IMGPATH | tail -n1 | cut -d" " -f4)
     fi
     if [[ $IMGWIDTH -ge $MINWID && $IMGHEIGHT -gt $MINHT ]] ; then
-      # Linux //TODO fixme when you have your ubuntu machine dont think this works atm
+      # Linux (Gnome only)
       if [[ "$OS" == 'Linux' ]]; then
         # Need to get the DBUS_SESSION_BUS_ADDRESS var pid because gnome is stupid
         PID=$(pgrep gnome-session)

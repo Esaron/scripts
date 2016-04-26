@@ -16,7 +16,7 @@ function parse_git_branch {
 
   local git_ref git_dirty status_line
 
-  git_ref=$(git symbolic-ref HEAD 2> /dev/null || echo -n "! ")
+  git_ref=$(git symbolic-ref HEAD 2> /dev/null || echo -n "$WARN ")
   status_line=$(git status 2> /dev/null | tail -n1 ; exit ${PIPESTATUS[0]})
   [ $? -eq 0 -a "$status_line" == "${status_line/working directory clean/}" ] && git_dirty="*"
   echo " (${git_ref#refs/heads/}$git_dirty)"
