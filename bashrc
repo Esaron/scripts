@@ -67,13 +67,18 @@ if $( isInteractive )
 
 #umask u=rwx,g=rx,o=
 #export GREP_OPTIONS="--color --directories=skip" # colorize grep output, and silently skip directories
-#export EDITOR=vim
-#export GIT_EDITOR=vim
-#export ANT_OPTS=-Xmx512m
-#
-## use git based PS1
-#setup_git_ps1
-#setup_git_promptcommand
-#
-## ll lists files with type, human size, and columns
-#alias ll="ls -CFhl"
+
+export EDITOR=vim
+export GIT_EDITOR=vim
+export ANT_OPTS=-Xmx512m
+
+source ~/.bash/colors
+source ~/.bash/symbols
+source ~/.bash/gitprompt
+
+# use git based PS1
+setup_git_ps1
+setup_git_promptcommand
+
+# ll lists files with type, human size, and columns
+alias ll="ls -CFhl"

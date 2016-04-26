@@ -31,6 +31,7 @@ aptget install ant
 aptget install flip
 aptget install libxml2-utils  # xmllint
 aptget install sshfs
+aptget install tree
 #apt-get install cryptsetup     # ecryptfs-setup-swap
 
 # scm
@@ -39,6 +40,7 @@ aptget update
 aptget install git git-gui gitk
 aptget install subversion
 aptget install mercurial
+aptget install cvs
 
 # services
 aptget install apache2        # httpd
@@ -65,7 +67,6 @@ aptget install compiz-plugins # extra compiz settings e.g. Window Rules
 aptget install wireshark
 aptget install nmap
 aptget install attr
-aptget install tree
 aptget install wine
 aptget install xbacklight
 
@@ -91,3 +92,16 @@ aptget install virtualbox
 
 # attempt cleanup
 aptget autoremove
+
+# Copy bash files from scripts repo
+mkdir ~/.bash
+cp colors symbols gitprompt ~/.bash
+cp bashrc ~/.bashrc
+
+# Copy scripts to bin dir and add to path
+mkdir ~/bin
+cp git-* svn-* jslint redditWallpaper.sh remote.sh replace.sh ~/.bin
+export PATH=$PATH:~/bin
+
+# Copy .gitconfig
+cp .gitconfig ~/.gitconfig
