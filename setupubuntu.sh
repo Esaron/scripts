@@ -48,10 +48,14 @@ aptget install apache2        # httpd
 aptget install openssh-server # sshd
 
 # java
-aptget install openjdk-7-jdk
-aptget install openjdk-6-jdk
+# earlier versions don't seem to be available on 16.04
+#aptget install openjdk-7-jdk
+#aptget install openjdk-6-jdk
+#aptget install icedtea-7-plugin
 aptget install default-jdk
-aptget install icedtea-7-plugin
+aptget install openjdk-8-jdk
+aptget install icedtea-8-plugin
+aptget install ant
 aptget install maven
 
 # other languages
