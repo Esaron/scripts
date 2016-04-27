@@ -82,4 +82,4 @@ setup_git_ps1
 setup_git_promptcommand
 
 # ll lists files with type, human size, and columns
-alias ll="ls -CFhl"
+alias ll="ls -CFhla --color"
