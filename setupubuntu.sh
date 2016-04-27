@@ -105,7 +105,7 @@ cp bashrc ~/.bashrc
 
 # Copy scripts to bin dir and add to path
 mkdir ~/bin
-cp git-* svn-* jslint redditWallpaper.sh remote.sh replace.sh ~/.bin
+cp git-* svn-* jslint redditWallpaper.sh remote.sh replace.sh ~/bin
 export PATH=$PATH:~/bin
 
 # Copy .gitconfig
