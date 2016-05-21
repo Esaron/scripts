@@ -16,7 +16,7 @@ function parse_git_branch {
 
   local git_ref git_dirty status_line
 
-  git_ref=$(git symbolic-ref HEAD 2> /dev/null || echo -n "$WARN ")
+  git_ref=$(git symbolic-ref HEAD 2> /dev/null || echo -n "$WARNING ")
   status_line=$(git status 2> /dev/null | tail -n1 ; exit ${PIPESTATUS[0]})
   [ $? -eq 0 -a "$status_line" == "${status_line/working directory clean/}" ] && git_dirty="*"
   echo " (${git_ref#refs/heads/}$git_dirty)"
@@ -27,13 +27,13 @@ function parse_git_branch {
 # otherwise change to blue
 #
 function parse_git_wd_color {
-  git rev-parse --git-dir &> /dev/null && echo -e "$MAGENTA" || echo -e "$BLUE"
+  git rev-parse --git-dir &> /dev/null && echo -e "$MAGENTA" || echo -e "$LBLUE"
 }
 
 # set up PS1 (command prompt) using git detection
 function setup_git_ps1 {
   #PS1="$GREEN\u@$GREEN\h:$BLUE\w${LYELLOW}\$(parse_git_branch)${RESET_COLOR}\$ "
-  PS1="\[$LGREEN\]\u\[$LCYAN\]@\h:\[\$(parse_git_wd_color)\]\w\[${LYELLOW}\]\$(parse_git_branch)\[${RESET_COLOR}\]\$ "
+  PS1="$LGREEN\u$LCYAN@\h:\$(parse_git_wd_color)\w${LYELLOW}\$(parse_git_branch)${COLOR_OFF}\$ "
 }
 
 # set up PROMPT_COMMAND (window title)
