@@ -28,8 +28,11 @@ else
 fi
 
 echo "Replacing \"$TOREPLACE\" with \"$REPLACEMENT\" in all of the following:"
-for target in $TARGETS
-do
-  tree "$target"
+for target in $TARGETS; do
+  if [ -d $target ]; then
+    tree "$target"
+  elif [ -f $target ]; then
+    echo $target
+  fi
 done
 find "$TARGETS" -type f -print0 | xargs -0 sed -i "s/$TOREPLACE/$REPLACEMENT/g"
