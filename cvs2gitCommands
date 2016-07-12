@@ -1,0 +1,16 @@
+#!/bin/bash
+
+CVS_ROOT='/home/jneel/orig.cvs'
+GIT_DIR='/home/jneel/git.cvs'
+STAGE_DIR='/home/jneel/tmp'
+for CVS_REPO in `find $CVS_ROOT/ -iname CVSROOT | sed 's|/CVSROOT||g'`; do
+  CVS_MODULE="`echo $CVS_REPO | sed \"s|$CVS_ROOT/\(.\+\)$|\1|\"`"
+  GIT_REPO="$GIT_DIR/$CVS_MODULE.git"
+  cvs2git --blobfile=$GIT_DIR/git-blob.dat --dumpfile=$GIT_DIR/git-dump.dat --username=jneel $CVS_REPO
+  git init --bare $GIT_REPO
+  cd $GIT_REPO
+  cat $GIT_DIR/git-blob.dat $GIT_DIR/git-dump.dat | git fast-import
+  git branch -D TAG.FIXUP
+  ./contrib/git-move-refs.py
+  git gc --prune=now
+done
