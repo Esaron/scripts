@@ -84,3 +84,6 @@ setup_git_promptcommand
 # ll lists files with type, human size, and columns
 alias ll="ls -CFhla --color"
 alias ls="ls --color=auto"
+
+# Turn off legacy XOFF signalling
+stty -ixon
