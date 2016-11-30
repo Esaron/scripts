@@ -10,7 +10,7 @@ IMGPATH="/Users/esaron/Pictures/flickrWallpapers/_current"
 MINWID=1920
 MINHT=1080
 function join { local IFS="$1"; shift; echo "$*"; }
-URL="http://www.loremflickr.com/$MINWID/$MINHT/$(join , ${TAGS[@]})"
+URL="loremflickr.com/g/$MINWID/$MINHT/$(join , ${TAGS[@]})"
 mv "$IMGPATH/_current" "$IMGPATH/_previous"
 echo "------------------Getting wallpaper from Flickr---------------"
 curl -o "$IMGPATH" "$URL"
