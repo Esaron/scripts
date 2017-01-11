@@ -5,7 +5,7 @@ CURRENT="$( git name-rev HEAD 2> /dev/null | awk "{ print \$2 }" )"
 # Find branches that have been merged into the current branch, not including the current (Safe to delete these)
 BRANCHES="$( git branch --merged | egrep -v "^\* $CURRENT$" )"
 # Find the current branch's upstream remote
-UPSTREAM="$( git branch --r --contains @{u} | grep "$CURRENT$" )"
+UPSTREAM="$( git branch --r --contains @{u} | grep "^  \w\+/$CURRENT$" )"
 REMOTE="$( echo "$UPSTREAM" | sed "s/\/$CURRENT$//" )"
 
 # If we're sure we want to clean
