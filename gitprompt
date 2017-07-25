@@ -27,7 +27,7 @@ function parse_git_branch {
 # otherwise change to blue
 #
 function parse_git_wd_color {
-  git rev-parse --git-dir &> /dev/null && echo -e "$LMAGENTARAW" || echo -e "$LBLUERAW"
+  git rev-parse --git-dir &> /dev/null && echo -e "$LMAGENTARAW" || echo -e "$BLUERAW"
 }
 
 # set up PS1 (command prompt) using git detection

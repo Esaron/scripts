@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "Sourcing " `pwd` "/bashrc..."
+
 #
 # Lots of bash utility functions
 #
