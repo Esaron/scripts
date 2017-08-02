@@ -1,7 +1,8 @@
 #!/bin/sh
 # Cleanup docker files: untagged containers and images.
 #
-# Use `docker-cleanup -n` for a dry run to see what would be deleted.
+# Use `docker-cleanup -f` to run.
+# Defaults to a dry run to see what would be deleted.
 
 get_exited_containers() {
   docker ps -a -q -f status=exited
