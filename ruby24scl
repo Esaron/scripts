@@ -1,0 +1,1 @@
+/usr/bin/scl enable rh-ruby24 -- bundle exec rails c
