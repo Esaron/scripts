@@ -66,6 +66,7 @@ if [ "$force" = true ]; then
         echo "Removing all containers and their volumes"
         all_containers=$(get_all_containers)
         if [ -n "$all_containers" ]; then
+            docker kill $all_containers
             docker rm -v $all_containers
         fi
 
