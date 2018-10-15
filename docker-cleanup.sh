@@ -63,7 +63,7 @@ done
 if [ "$force" = true ]; then
     if [ "$all" = true ]; then
         # Remove all containers and volumes
-        echo "Removing all containers and their volumes"
+        echo "Removing all containers and their volumes:" >&2
         all_containers=$(get_all_containers)
         if [ -n "$all_containers" ]; then
             docker kill $all_containers
@@ -71,35 +71,36 @@ if [ "$force" = true ]; then
         fi
 
         # Remove all images
-        echo "Removing all images"
+        echo "Removing all images:" >&2
         all_images=$(get_all_images)
         if [ -n "$all_images" ]; then
             docker rmi -f $all_images
         fi
     else
-        # Remove exited containers
-        echo "Removing exited containers:" >&2
+        # Remove exited containers and their volumes
+        echo "Removing exited containers and their volumes:" >&2
         exited_containers=$(get_exited_containers)
         if [ -n "$exited_containers" ]; then
             docker rm -v $exited_containers
         fi
 
-        # Remove containers with untagged images.
-        echo "Removing containers:" >&2
+        # Remove containers with untagged images and their volumes
+        echo "Removing containers with untagged images and their volumes:" >&2
         untagged_containers=$(get_untagged_containers 1)
         if [ -n "$untagged_containers" ]; then
-            docker rm --volumes=true $untagged_containers
+            docker kill $untagged_containers
+            docker rm -v $untagged_containers
         fi
 
         # Remove untagged images
-        echo "Removing images:" >&2
+        echo "Removing untagged images:" >&2
         untagged_images=$(get_untagged_images 3)
         if [ -n "$untagged_images" ]; then
             docker rmi $untagged_images
         fi
 
         # Remove untagged volumes
-        echo "Removing volumes:" >&2
+        echo "Removing untagged volumes:" >&2
         untagged_volumes=$(get_untagged_volumes)
         if [ -n "$untagged_volumes" ]; then
             docker volume rm $untagged_volumes
@@ -125,34 +126,5 @@ else
         echo "=== Untagged volumes: ==="
         get_untagged_volumes
     fi
-    exit
 fi
 
-
-# Remove exited containers
-echo "Removing exited containers:" >&2
-exited=$(get_exited_containers)
-if [ -n "$exited" ]; then
-    docker rm -v $exited
-fi
-
-# Remove containers with untagged images.
-echo "Removing containers:" >&2
-with_untagged_i=$(get_untagged_containers 1)
-if [ -n "$with_untagged_i" ]; then
-    docker rm --volumes=true $with_untagged_i
-fi
-
-# Remove untagged images
-echo "Removing images:" >&2
-untagged_i=$(get_untagged_images 3)
-if [ -n "$untagged_i" ]; then
-    docker rmi $untagged_i
-fi
-
-# Remove untagged volumes
-echo "Removing volumes:" >&2
-untagged_v=$(get_untagged_volumes)
-if [ -n "$untagged_v" ]; then
-    docker volume rm $untagged_v
-fi
