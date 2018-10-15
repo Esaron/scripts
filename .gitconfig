@@ -6,3 +6,14 @@
   hist = log --pretty=format:\"%h %ad | %s%d [%an]\" --graph --date=short
   type = cat-file -t
   dump = cat-file -p
+  # Open the git remote url (gasp)
+  browse = "! f() { URL=$(git config remote.${1-origin}.url | sed -e 's#^.*@#https://#' -e 's#.git$##' -e 's#:#/#2'); git web--browse $URL; }; f"
+[user]
+  name = Esaron
+  email = spam.esaron@gmail.com
+[init]
+  templatedir = ~/.git-templates
+[core]
+  excludesfile = ~/git/.gitignore
+[commit]
+  template = ~/.git-templates/.gitmessage
