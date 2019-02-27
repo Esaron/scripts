@@ -35,4 +35,4 @@ for target in $TARGETS; do
     echo $target
   fi
 done
-find "$TARGETS" -type f -print0 | xargs -0 sed -i "s/$TOREPLACE/$REPLACEMENT/g"
+find "$TARGETS" -type f -print0 | xargs -0 sed -i'.original' -e "s/$TOREPLACE/$REPLACEMENT/g"
