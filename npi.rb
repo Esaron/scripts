@@ -12,9 +12,11 @@ class Npi
 
     private
 
+    MAGIC_PREFIX = [8, 0, 8, 4, 0].freeze
+
     def generate_npi(valid: true)
       npi_sans_check = rand_npi
-      luhn_result = luhn(npi_sans_check)
+      luhn_result = luhn(MAGIC_PREFIX + npi_sans_check)
       check_digit = check_digit(luhn_result)
       # If looking for an invalid npi, randomly use any digit other than the check digit.
       "#{npi_sans_check.reverse.join}#{valid ? check_digit : ([*0..9] - [check_digit]).sample}"
