@@ -17,3 +17,10 @@
   excludesfile = ~/git/.gitignore
 [commit]
   template = ~/.git-templates/.gitmessage
+[pull]
+  rebase = true
+[rebase]
+  autoStash = true
+[rerere]
+  enabled = true
+
