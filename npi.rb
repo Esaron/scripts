@@ -12,11 +12,11 @@ class Npi
 
     private
 
-    MAGIC_PREFIX = [8, 0, 8, 4, 0].freeze
+    MAGIC_PREFIX_SUM = [8, 0, 8, 4, 0].sum.freeze
 
     def generate_npi(valid: true)
       npi_sans_check = rand_npi
-      luhn_result = luhn(MAGIC_PREFIX + npi_sans_check)
+      luhn_result = luhn(npi_sans_check)
       check_digit = check_digit(luhn_result)
       # If looking for an invalid npi, randomly use any digit other than the check digit.
       "#{npi_sans_check.reverse.join}#{valid ? check_digit : ([*0..9] - [check_digit]).sample}"
@@ -25,7 +25,7 @@ class Npi
     def luhn(digit_arr)
       # For each group of 2 digits, multiply the first digit by 2 and add together any digits in the result and take
       # the second digit as-is. Add all the resulting digits together and mod by 10.
-      digit_arr.each_slice(2).flat_map { |x, y| [(x * 2).divmod(10), y || 0] }.flatten.inject(:+) % 10
+      (10 - ((digit_arr.each_slice(2).flat_map { |x, y| [(x * 2).divmod(10), y || 0] }.flatten.inject(:+) + MAGIC_PREFIX_SUM) % 10) % 10)
     end
 
     def check_digit(luhn_result)
