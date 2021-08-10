@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "Sourcing " `pwd` "/bashrc..."
+echo "Sourcing $(dirname BASH_SOURCE[0])/bashrc..."
 
 #
 # Lots of bash utility functions
@@ -84,8 +84,12 @@ setup_git_ps1
 setup_git_promptcommand
 
 # ll lists files with type, human size, and columns
-alias ll="ls -CFhla --color"
-alias ls="ls --color=auto"
+alias ll="ls -CFhlaG"
+alias ls="ls -G"
+
+# docker stuff
+alias de="docker exec -it"
+alias dps="docker ps --format \"table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Size}}\t{{.CreatedAt}}\""
 
 # Turn off legacy XOFF signalling
 stty -ixon
