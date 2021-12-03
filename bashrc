@@ -89,7 +89,12 @@ alias ls="ls -G"
 
 # docker stuff
 alias de="docker exec -it"
+alias dce="docker-compose run -rm"
 alias dps="docker ps --format \"table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Size}}\t{{.CreatedAt}}\""
+alias dattach="docker attach --sig-proxy=false"
+
+# ember tests
+alias etest="yarn run test:ember --serve"
 
 # Turn off legacy XOFF signalling
 stty -ixon
