@@ -5,12 +5,6 @@
 #  Arg 2: Replace with
 #  Arg 3+: Target dirs/files (default to current)
 
-if [[ $# < 2 ]]
-then
-  echo "Usage: replace toReplace replaceWith [targetDirs...]"
-  exit 1
-fi
-
 TOREPLACE=$1
 REPLACEMENT=$2
 if [[ $TOREPLACE == */* || $REPLACEMENT == */* ]]
@@ -28,13 +22,7 @@ else
 fi
 
 echo "Replacing \"$TOREPLACE\" with \"$REPLACEMENT\" in all of the following:"
-for target in $TARGETS; do
-  if [ -d $target ]; then
-    tree "$target"
-  elif [ -f $target ]; then
-    echo $target
-  fi
-done
+echo "$TARGETS"
 
-find "$TARGETS" -type f -print0 | xargs -0 sed -i '' -e "s/$TOREPLACE/$REPLACEMENT/g"
+find $TARGETS -type f -exec sed -i '' -e "s/$TOREPLACE/$REPLACEMENT/g" {} +
 
