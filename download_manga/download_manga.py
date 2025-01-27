@@ -103,6 +103,6 @@ if __name__ == "__main__":
         print(f"Usage: python {os.path.basename(__file__)} <BASE_URL>")
         sys.exit(1)
 
-    url_suffix_arg = sys.argv[1]
-    download_images_from_chapters(url_suffix_arg)
+    for url_suffix_arg in sys.argv[1:]:
+        download_images_from_chapters(url_suffix_arg)
 
