@@ -32,7 +32,6 @@ def download_images_from_chapters(url_suffix):
 
     for a_tag in soup.find_all('a', href=True):
         href = a_tag['href']
-        print(chapter_pattern)
         match = chapter_pattern.search(href)
         if match:
             chapter_number = int(match.group(1))
