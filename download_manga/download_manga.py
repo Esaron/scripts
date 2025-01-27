@@ -87,7 +87,7 @@ def download_images_from_chapters(url_suffix):
 
             save_path = os.path.join(chapter_dir, filename)
 
-            print(f"  Downloading {image_url} -> {save_path}")
+            #print(f"  Downloading {image_url} -> {save_path}")
             try:
                 img_data = requests.get(image_url).content
                 with open(save_path, 'wb') as f:
