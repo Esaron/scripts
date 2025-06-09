@@ -98,3 +98,6 @@ alias etest="yarn run test:ember --serve"
 
 # Turn off legacy XOFF signalling
 stty -ixon
+
+# Prevent Junie from spamming the console and freezing
+PROMPT_COMMAND='printf "$"'
