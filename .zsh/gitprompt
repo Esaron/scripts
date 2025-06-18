@@ -1,0 +1,65 @@
+#!/bin/zsh
+#
+# Requires constants from
+#   source colors
+#   source symbols
+#
+
+#
+# function which prints the current git branch name in parentheses
+# Branch name is appended with '*' if the workdir is dirty
+# Requires `source symbols`
+#
+function parse_git_branch() {
+  git rev-parse --git-dir &>/dev/null || return
+
+  local git_ref git_dirty status_line
+
+  git_ref=$(git symbolic-ref HEAD 2> /dev/null || echo -n "$WARNING ")
+  status_line=$(git status 2> /dev/null | tail -n1)
+  local git_status=$?
+  [[ $git_status -eq 0 && "$status_line" != *"working tree clean"* ]] && git_dirty="*"
+  echo " (${git_ref#refs/heads/}$git_dirty)"
+}
+
+#
+# Change font to yellow if current directory is a git working directory, relies on `source colors`
+# otherwise change to white
+#
+function parse_git_wd_color() {
+  git rev-parse --git-dir &> /dev/null && echo -e "$LYELLOWRAW" || echo -e "$LWHITERAW"
+}
+
+# set up PS1 (command prompt) using git detection
+function setup_git_ps1() {
+  setopt prompt_subst
+  # In zsh, use %{...%} for non-printing characters and command substitution with $()
+  # PS1="%{$LGREEN%}%n%{$LCYAN%}@%m:%{$LWHITE%}%~%{$LYELLOW%}\$(parse_git_branch)%{$COLOR_OFF%} \$ "
+  PS1="%{$LWHITE%}%~%{$LYELLOW%}\$(parse_git_branch)%{$COLOR_OFF%} \$ "
+}
+
+# set up window title update function (replaces PROMPT_COMMAND)
+function setup_git_promptcommand() {
+  # In zsh, use precmd hook instead of PROMPT_COMMAND
+  function precmd() {
+    print -Pn "\e]0;%n@%m: %~$(parse_git_branch)\a"
+  }
+}
+
+# Alternative: You can also use zsh's built-in git integration
+function setup_git_ps1_modern() {
+  # Enable zsh git integration
+  autoload -Uz vcs_info
+  precmd_vcs_info() { vcs_info }
+  precmd_functions+=( precmd_vcs_info )
+  setopt prompt_subst
+  
+  # Configure vcs_info for git
+  zstyle ':vcs_info:git:*' formats ' (%b%u%c)'
+  zstyle ':vcs_info:git:*' actionformats ' (%b|%a%u%c)'
+  zstyle ':vcs_info:git:*' check-for-changes true
+  zstyle ':vcs_info:git:*' unstagedstr '*'
+  zstyle ':vcs_info:git:*' stagedstr '+'
+  
+  PS1="%{$LGREEN%}%n%{$LCYAN%}@%m:%{$LWHITE%}%~%{$LYELLOW%}\$vcs_info_msg_0_%{$COLOR_OFF%} \$ "
+}

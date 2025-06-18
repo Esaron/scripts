@@ -1,0 +1,140 @@
+#!/bin/zsh
+
+echo "Sourcing ~/.zsh/zshrc..."
+
+#
+# Lots of zsh utility functions
+#
+
+# Utility to join an array with a given separator
+# example usage:
+#    `join | A B C`
+#    will print "A|B|C"
+function join() {
+  local IFS=$1
+  shift
+  echo "$*"
+}
+
+# read a paths file, new-line separated list of locations and return a PATH string
+# will resolve $HOME and other tokens
+# example usage:
+#   export PATH="$(join ":" $PATH ~/bin $(readpaths ~/bin/paths))"
+function readpaths() {
+  local pathfile=$1
+  local -a LINES
+  IFS=$'\n' LINES=(${(f)"$(sed '/^\#/d' $pathfile)"})
+  local IFS=":"
+  eval echo "${LINES[*]}"
+}
+
+#
+# Method which builds up a path-like string of the arguments and their children (sorted ignoring case)
+# @param dirs... a list of directories
+#
+function createChildDirsPath() {
+  local ELEMENT RESULT
+  for ELEMENT in $(find "$@" -depth -type d -o -type l | sort --ignore-case); do
+    [[ -h "$ELEMENT" ]] && ELEMENT=$(readlink "$ELEMENT") # resolve single layer of links
+    [[ -d "$ELEMENT" ]] && RESULT="$RESULT:$ELEMENT" # add directories to RESULT
+  done
+  echo "${RESULT##:}"
+}
+
+# test if the current shell is interactive, returns 0 if interactive, 1 otherwise
+# can be used like `if isInteractive; ...`
+function isInteractive() {
+  [[ -o interactive ]]
+}
+
+# set key bindings so up and down to search based history completion
+function setup_key_bindings() {
+  # Enable history search with up/down arrows
+  autoload -U up-line-or-beginning-search
+  autoload -U down-line-or-beginning-search
+  zle -N up-line-or-beginning-search
+  zle -N down-line-or-beginning-search
+  bindkey "^[[A" up-line-or-beginning-search
+  bindkey "^[[B" down-line-or-beginning-search
+  bindkey "^[OA" up-line-or-beginning-search
+  bindkey "^[OB" down-line-or-beginning-search
+}
+
+# Turn off XOFF signaling
+stty -ixon
+
+#
+# Example Setup
+#
+
+#umask u=rwx,g=rx,o=
+export EDITOR=vim
+export GIT_EDITOR=vim
+export ANT_OPTS=-Xmx512m
+export PATH="~/git/scripts:$PATH"
+
+# Source configuration files
+source ~/.zsh/colors
+source ~/.zsh/symbols
+source ~/.zsh/gitprompt
+source ~/.zsh/secrets
+
+# Load git completion for zsh
+autoload -Uz compinit && compinit
+# For git completion, you can use zsh's built-in git completion or install git-completion.zsh
+
+# use git based PS1
+setup_git_ps1
+setup_git_promptcommand
+
+# set up/down arrow history searching
+setup_key_bindings
+
+# Configure history
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_IGNORE_SPACE
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+HISTSIZE=10000
+SAVEHIST=10000
+HISTFILE=~/.zsh_history
+
+# ll lists files with type, human size, and columns
+alias ll="ls -CFhlaG"
+alias ls="ls -G"
+alias ag='ag --hidden'
+
+# docker stuff
+alias de="docker exec -it"
+alias dce="docker-compose exec -it"
+alias dps="docker ps --format \"table {{.ID}}\t{{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Size}}\t{{.CreatedAt}}\""
+alias dattach="docker attach --sig-proxy=false"
+alias dcw="docker attach --sig-proxy=false \$(docker inspect -f '{{.Name}}' \$(docker-compose ps -q web) | cut -c2-)"
+alias deb="docker exec -it betterup-app-web-1"
+alias dew="docker exec -it betterup-app-worker-1"
+
+# aws stuff
+alias aws-login="aws sso login"
+alias aws-config="vim ~/.aws/config"
+alias aws-which="aws sts get-caller-identity"
+alias aws-current="echo $AWS_PROFILE"
+
+# ember tests
+alias ember-test="bin/ember test --serve --filter=" #filter
+alias ember-g="bin/ember g component-test" #path
+
+export GH_USER='esaron'
+
+# Load kubectl completion for zsh
+source <(kubectl completion zsh)
+
+# ag sorted by files - not performant, but works fine
+function ag-sorted() {
+  ag "$1" $(ag -l "$1" "$2" | sort)
+}
+
+# zsh equivalent of PROMPT_COMMAND - use precmd hook instead
+function precmd() {
+  printf ""
+}
